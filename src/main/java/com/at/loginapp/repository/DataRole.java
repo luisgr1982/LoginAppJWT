@@ -14,8 +14,8 @@ public class DataRole implements CommandLineRunner{
 	
 	@Override
 	public void run(String... args) throws Exception {
-		roleRepository.save(new Role("USER"));
-		roleRepository.save(new Role("ADMIN"));
+		roleRepository.save(new Role("ROLE_USER"));
+		roleRepository.save(new Role("ROLE_ADMIN"));
 	}
 
 }

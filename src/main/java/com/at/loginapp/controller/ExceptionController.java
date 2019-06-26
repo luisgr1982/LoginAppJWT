@@ -10,6 +10,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.at.loginapp.exceptions.EmailLoginExistException;
 import com.at.loginapp.exceptions.Error;
+import com.at.loginapp.exceptions.InvalidTokenException;
+import com.at.loginapp.exceptions.LoginErrorException;
 import com.at.loginapp.exceptions.LoginRegistrationErrorException;
 import com.at.loginapp.exceptions.UserLoginExistException;
 
@@ -23,6 +25,11 @@ public class ExceptionController {
 		return new ResponseEntity<Error>(errorDetail, HttpStatus.NOT_FOUND);
 	}
 	
+	@ExceptionHandler(LoginErrorException.class)
+	public ResponseEntity<Error> loginError(LoginErrorException ex, WebRequest request) {
+		errorDetail = new Error(new Date(), ex.getMessage(), request.getDescription(false));
+		return new ResponseEntity<Error>(errorDetail, HttpStatus.NOT_FOUND);
+	}
 	@ExceptionHandler(UserLoginExistException.class)
 	public ResponseEntity<Error> userLoginExistError(UserLoginExistException ex, WebRequest request) {
 		errorDetail = new Error(new Date(), ex.getMessage(), request.getDescription(false));
@@ -31,6 +38,12 @@ public class ExceptionController {
 
 	@ExceptionHandler(EmailLoginExistException.class)
 	public ResponseEntity<Error> emailLoginExistError(EmailLoginExistException ex, WebRequest request) {
+		errorDetail = new Error(new Date(), ex.getMessage(), request.getDescription(false));
+		return new ResponseEntity<Error>(errorDetail, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<Error> invalidTokenError(InvalidTokenException ex, WebRequest request) {
 		errorDetail = new Error(new Date(), ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Error>(errorDetail, HttpStatus.BAD_REQUEST);
 	}

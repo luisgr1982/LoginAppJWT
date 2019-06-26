@@ -12,6 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.at.loginapp.utils.Constants.REGISTER_URL;
+import static com.at.loginapp.utils.Constants.LOGIN_URL;
+import static com.at.loginapp.utils.Constants.H2DATABASE_URL;
+import static com.at.loginapp.utils.Constants.HOME_URL;
+
 @Configuration
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
@@ -22,16 +27,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
         httpSecurity
         .authorizeRequests()
         .antMatchers("/").permitAll()
-        .antMatchers("/login").permitAll()
-        .antMatchers("/h2-console/**").permitAll()
-        .antMatchers(HttpMethod.POST,"/register").permitAll()
-        .antMatchers("/home").hasAuthority("USER")
+        .antMatchers(H2DATABASE_URL).permitAll()
+        .antMatchers(HttpMethod.POST,REGISTER_URL,LOGIN_URL).permitAll()
+        .antMatchers(HOME_URL).hasAuthority("ROLE_USER")
         .anyRequest().authenticated()
         .and().httpBasic()
+       // .and().logout().logoutUrl("/j_spring_security_logout").logoutSuccessUrl("/login")
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and().headers().frameOptions().disable()
-        .and().csrf()     
-        .disable();
+        .and().csrf().disable()
+        .addFilter(new JWTAuthorizationFilter(authenticationManager()));
     }
 
     @Bean

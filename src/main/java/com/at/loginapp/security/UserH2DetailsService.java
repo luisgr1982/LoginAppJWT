@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+
 import com.at.loginapp.model.User;
 import com.at.loginapp.repository.UserRepository;
 
@@ -18,13 +19,12 @@ import com.at.loginapp.repository.UserRepository;
 public class UserH2DetailsService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 		user.get().getRoles().stream().forEach(b->authorities.add(new SimpleGrantedAuthority(b.getName())));
-		return new org.springframework.security.core.userdetails.User(user.get().getUsername(),user.get().getPassword(),authorities);
-	}
-
+		return new org.springframework.security.core.userdetails.User(user.get().getUsername(),user.get().getPassword(),authorities);	
+	}	
 }
